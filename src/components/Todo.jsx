@@ -3,40 +3,35 @@ import plus from "../assets/plus.svg";
 import Task from "./Task";
 import { nanoid } from "nanoid";
 
-export const Todo = () => {
-  const [text, setText] = useState({ taskName: "" });
+const Todo = () => {
+  const [text, setText] = useState("");
   const [tasks, setTasks] = useState([]);
 
-  const handleText = (e) => {
-    const { name, value } = e.target;
-    setText((prev) => {
-      return {
-        ...prev,
-        [name]: value,
-      };
-    });
+  const handleText = (event) => {
+    const { value } = event.target;
+    setText(value);
   };
   const createNote = () => {
-    if (text.taskName === "") {
+    if (text === "") {
       return alert("Note name must be provided");
     }
     const task = {
       id: nanoid(),
-      value: text.taskName,
+      value: text,
       checked: false,
     };
     setTasks((oldTask) => [...oldTask, task]);
-    setText({ taskName: "" });
+    setText("");
   };
   const handleClick = (id) => {
-    const currentTask = tasks.map((el) =>
-      el.id === id ? { ...el, checked: !el.checked } : el
+    const currentTask = tasks.map(task =>
+      task.id === id ? { ...task, checked: !task.checked } : task
     );
 
     setTasks(currentTask);
   };
   const deleteTask = (id) => {
-    const updatedTask = tasks.filter((el) => el.id !== id || !el.checked);
+    const updatedTask = tasks.filter(task => task.id !== id || !task.checked);
     setTasks(updatedTask);
   };
 
@@ -49,7 +44,7 @@ export const Todo = () => {
           type="text"
           className="flex-grow py-3 outline-none"
           name="taskName"
-          value={text.taskName}
+          value={text}
           onChange={handleText}
         />
         <button onClick={createNote}>
@@ -58,11 +53,11 @@ export const Todo = () => {
       </div>
       <form className="m-5">
         {tasks.length > 0 ? (
-          tasks.map((task, index) => {
+          tasks.map((task, id) => {
             return (
               <Task
                 text={task.value}
-                key={index}
+                key={id}
                 checked={task.checked}
                 onClick={() => deleteTask(task.id)}
                 onChange={() => handleClick(task.id)}
@@ -77,4 +72,5 @@ export const Todo = () => {
       </form>
     </div>
   );
-};
+}
+export default Todo;
